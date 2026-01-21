@@ -81,12 +81,7 @@ button {
 #app {
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    /* Fallback */
-    height: 100dvh;
-    /* Mobile viewport fix */
-    overflow: hidden;
-    /* Prevent body scroll, let main scroll */
+    min-height: 100vh;
     max-width: 100vw;
 }
 
@@ -94,31 +89,41 @@ button {
 main {
     flex: 1;
     padding: 20px;
-    padding-bottom: 20px;
-    /* No longer need padding for fixed nav */
-    overflow-y: auto;
-    /* Internal scrolling */
-    -webkit-overflow-scrolling: touch;
-    /* Smooth iOS scroll */
+    padding-bottom: calc(var(--bottom-nav-height) + 30px);
+    /* Extra padding for bottom nav */
+    /* Remove internal scroll locks */
 }
 
 /* Navigation - Mobile First (Bottom Bar) */
 .bottom-nav {
-    position: relative;
-    /* Static in flex flow */
+    position: fixed;
+    /* Anchored to viewport */
+    bottom: 0;
+    left: 0;
     width: 100%;
     height: var(--bottom-nav-height);
     background: var(--bg-surface);
-    /* Solid background, less glassmorphism issues */
     border-top: 1px solid var(--border);
     display: flex;
     justify-content: space-around;
     align-items: center;
-    z-index: 100;
-    flex-shrink: 0;
-    /* Prevent shrinking */
+    z-index: 1000;
+    /* Ensure on top */
     padding-bottom: env(safe-area-inset-bottom);
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+}
+
+background: var(--bg-surface);
+/* Solid background, less glassmorphism issues */
+border-top: 1px solid var(--border);
+display: flex;
+justify-content: space-around;
+align-items: center;
+z-index: 100;
+flex-shrink: 0;
+/* Prevent shrinking */
+padding-bottom: env(safe-area-inset-bottom);
+box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
 }
 
 [data-theme="light"] .bottom-nav {
