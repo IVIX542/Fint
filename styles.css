@@ -1,0 +1,292 @@
+:root {
+    /* Color Palette - Premium HSL */
+    --primary-hue: 250;
+    /* Deep Purple/Blue */
+    --secondary-hue: 160;
+    /* Emerald Green for finance */
+
+    /* Light Theme */
+    --bg-body-light: hsl(0, 0%, 98%);
+    --bg-surface-light: hsl(0, 0%, 100%);
+    --text-main-light: hsl(220, 10%, 15%);
+    --text-muted-light: hsl(220, 10%, 45%);
+    --border-light: hsl(220, 10%, 90%);
+
+    /* Dark Theme */
+    --bg-body-dark: hsl(240, 10%, 10%);
+    --bg-surface-dark: hsl(240, 10%, 14%);
+    --text-main-dark: hsl(0, 0%, 95%);
+    --text-muted-dark: hsl(240, 5%, 65%);
+    --border-dark: hsl(240, 5%, 20%);
+
+    /* Default to Dark Mode variables initially, script will toggle */
+    --bg-body: var(--bg-body-dark);
+    --bg-surface: var(--bg-surface-dark);
+    --text-main: var(--text-main-dark);
+    --text-muted: var(--text-muted-dark);
+    --border: var(--border-dark);
+    --primary: hsl(var(--primary-hue), 70%, 60%);
+    --primary-glow: hsla(var(--primary-hue), 70%, 60%, 0.3);
+    --secondary: hsl(var(--secondary-hue), 80%, 45%);
+    --danger: hsl(340, 75%, 55%);
+
+    /* Spacing & Radius */
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --header-height: 64px;
+    --bottom-nav-height: 70px;
+}
+
+[data-theme="light"] {
+    --bg-body: var(--bg-body-light);
+    --bg-surface: var(--bg-surface-light);
+    --text-main: var(--text-main-light);
+    --text-muted: var(--text-muted-light);
+    --border: var(--border-light);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    line-height: 1.5;
+    overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Typography */
+h1,
+h2,
+h3 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+
+/* Layout */
+#app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    /* Fallback */
+    height: 100dvh;
+    /* Mobile viewport fix */
+    overflow: hidden;
+    /* Prevent body scroll, let main scroll */
+    max-width: 100vw;
+}
+
+/* Main Content Area */
+main {
+    flex: 1;
+    padding: 20px;
+    padding-bottom: 20px;
+    /* No longer need padding for fixed nav */
+    overflow-y: auto;
+    /* Internal scrolling */
+    -webkit-overflow-scrolling: touch;
+    /* Smooth iOS scroll */
+}
+
+/* Navigation - Mobile First (Bottom Bar) */
+.bottom-nav {
+    position: relative;
+    /* Static in flex flow */
+    width: 100%;
+    height: var(--bottom-nav-height);
+    background: var(--bg-surface);
+    /* Solid background, less glassmorphism issues */
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 100;
+    flex-shrink: 0;
+    /* Prevent shrinking */
+    padding-bottom: env(safe-area-inset-bottom);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .bottom-nav {
+    background: rgba(255, 255, 255, 0.85);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.75rem;
+    gap: 4px;
+    transition: color 0.3s ease, transform 0.2s ease;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.nav-item svg {
+    width: 24px;
+    height: 24px;
+    stroke: currentColor;
+    stroke-width: 2;
+    fill: none;
+    transition: stroke 0.3s ease;
+}
+
+.nav-item.active {
+    color: var(--primary);
+}
+
+.nav-item:active {
+    transform: scale(0.95);
+}
+
+/* Desktop Sidebar (Media Query) */
+@media (min-width: 768px) {
+    #app {
+        flex-direction: row;
+    }
+
+    .bottom-nav {
+        position: sticky;
+        top: 0;
+        width: 240px;
+        height: 100vh;
+        flex-direction: column;
+        justify-content: start;
+        padding-top: 40px;
+        border-top: none;
+        border-right: 1px solid var(--border);
+        background: var(--bg-surface);
+    }
+
+    main {
+        padding-bottom: 20px;
+    }
+
+    .nav-item {
+        flex-direction: row;
+        width: 90%;
+        justify-content: start;
+        padding: 12px 16px;
+        font-size: 1rem;
+        gap: 12px;
+    }
+}
+
+/* Components */
+.card {
+    background: var(--bg-surface);
+    border-radius: var(--radius-md);
+    padding: 24px;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+}
+
+.btn {
+    padding: 12px 24px;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    transition: all 0.2s;
+    background: var(--bg-surface);
+    color: var(--text-main);
+    border: 1px solid var(--border);
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 14px var(--primary-glow);
+}
+
+.btn-primary:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 8px var(--primary-glow);
+}
+
+/* Floating Action Button */
+.fab {
+    position: fixed;
+    bottom: calc(var(--bottom-nav-height) + 20px);
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px var(--primary-glow);
+    z-index: 90;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.fab:active {
+    transform: scale(0.9);
+}
+
+@media (min-width: 768px) {
+    .fab {
+        bottom: 40px;
+        right: 40px;
+    }
+}
+
+/* Inputs */
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--bg-body);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-main);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input:focus {
+    border-color: var(--primary);
+}
+
+/* Utils */
+.hidden {
+    display: none !important;
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-in forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
