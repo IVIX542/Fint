@@ -1,0 +1,37 @@
+{
+  "name": "Fint - Finanzas Personales",
+  "short_name": "Fint",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1e1e23",
+  "theme_color": "#1e1e23",
+  "scope": "./",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "share_target": {
+    "action": "/add-transaction",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "name",
+      "text": "description",
+      "url": "link",
+      "files": [
+        {
+          "name": "file",
+          "accept": ["image/*", "application/pdf"]
+        }
+      ]
+    }
+  }
+}
