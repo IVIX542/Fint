@@ -58,7 +58,10 @@ body {
     background-color: var(--bg-body);
     color: var(--text-main);
     line-height: 1.5;
-    overflow-x: hidden;
+    overflow: hidden;
+    /* Prevent body scroll */
+    height: 100vh;
+    /* Fixed height */
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -81,8 +84,10 @@ button {
 #app {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    height: 100%;
+    /* Full height of body */
     max-width: 100vw;
+    overflow: hidden;
 }
 
 /* Main Content Area */
@@ -90,8 +95,10 @@ main {
     flex: 1;
     padding: 20px;
     padding-bottom: calc(var(--bottom-nav-height) + 30px);
-    /* Extra padding for bottom nav */
-    /* Remove internal scroll locks */
+    overflow-y: auto;
+    /* Scroll ONLY here */
+    -webkit-overflow-scrolling: touch;
+    /* Smooth iOS scroll */
 }
 
 /* Navigation - Mobile First (Bottom Bar) */

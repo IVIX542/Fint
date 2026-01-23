@@ -88,6 +88,11 @@ export const syncManager = {
 
     async pullFromCloud() {
         if (!navigator.onLine) return;
+        if (this.isPulling) {
+            console.log('SyncManager: Pull already in progress, skipping.');
+            return;
+        }
+        this.isPulling = true;
         console.log('SyncManager: Pulling from Cloud...');
 
         try {
@@ -136,8 +141,11 @@ export const syncManager = {
                 console.log('Profile synced.');
             }
 
-        } catch (err) {
-            console.error('Pull error:', err);
+            // NOTIFY UI
+            window.dispatchEvent(new Event('fint-data-changed'));
+
+        } finally {
+            this.isPulling = false;
         }
     },
 
