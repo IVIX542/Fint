@@ -30,6 +30,16 @@ export default async function () {
 
                     <button type="submit" class="btn btn-primary" style="width: 100%;" id="submit-btn">Entrar</button>
                 </form>
+                <div style="text-align:center; margin: 20px 0; color: var(--text-muted); font-size: 0.8rem; display: flex; align-items: center; gap: 10px;">
+                    <span style="flex:1; height:1px; background:var(--border);"></span>
+                    <span>O</span>
+                    <span style="flex:1; height:1px; background:var(--border);"></span>
+                </div>
+
+                <button type="button" id="google-login-btn" class="btn" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; background: white; color: #333; border: 1px solid #ddd; font-weight: 500;">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18" height="18" alt="Google">
+                    Iniciar con Google
+                </button>
             </div>
             
             <p style="text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 0.8rem;">
@@ -71,6 +81,27 @@ export default async function () {
 
         tabLogin.addEventListener('click', () => toggleMode(true));
         tabRegister.addEventListener('click', () => toggleMode(false));
+
+        const googleBtn = document.getElementById('google-login-btn');
+
+        if (googleBtn) {
+            googleBtn.addEventListener('click', async () => {
+                try {
+                    const { error } = await supabase.auth.signInWithOAuth({
+                        provider: 'google',
+                        options: {
+                            redirectTo: window.location.origin // PWA Home
+                        }
+                    });
+                    if (error) throw error;
+                    // Note: Browser will redirect to Google, then back to app. 
+                    // Session will be handled by onAuthStateChange in router/app.
+                } catch (err) {
+                    console.error('Google Auth Error:', err);
+                    alert('Error al iniciar con Google: ' + err.message);
+                }
+            });
+        }
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -115,3 +146,4 @@ export default async function () {
 
     return { template, init };
 }
+

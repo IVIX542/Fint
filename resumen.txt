@@ -1,0 +1,149 @@
+1. Arquitectura del Proyecto
+El proyecto se desarrollará bajo la arquitectura "Offline-First" PWA (Progressive Web App) encapsulada.
+
+Núcleo: Aplicación Web Progresiva (PWA) que se ejecuta en el navegador pero tiene capacidades nativas (Service Workers).
+
+Empaquetado Móvil: Uso de TWA (Trusted Web Activities). Esto permite "envolver" la PWA en un contenedor nativo Android, generando un APK real y firmado, indistinguible de una app nativa.
+
+Sincronización: La app funciona contra una base de datos local (en el dispositivo) y se sincroniza bidireccionalmente con la nube cuando hay conexión.
+
+2. Stack Tecnológico
+Frontend (Interfaz y Lógica)
+Lenguaje: JavaScript (ES6+) estándar.
+
+UI/Maquetación: HTML5 + CSS3 (Flexbox y Grid para la interfaz adaptativa según resolución).
+
+Motor de Plantillas: Literal Templates de JS (para evitar frameworks pesados, manteniendo la app ligera).
+
+Internacionalización (i18n): Uso de archivos JSON diccionarios (es.json, en.json) cargados dinámicamente según el idioma del navegador.
+
+Almacenamiento Local (Offline)
+IndexedDB: Para los datos masivos (lista de miles de transacciones, categorías). Es mucho más potente que LocalStorage y permite búsquedas rápidas.
+
+LocalStorage: Exclusivamente para configuraciones ligeras (preferencias de usuario, token de sesión, bandera de modo oscuro/claro).
+
+Cache API: Gestionada por el Service Worker para guardar los archivos estáticos (HTML, CSS, JS) y que la app cargue instantáneamente sin internet.
+
+Backend y Nube (BaaS)
+Plataforma: Supabase (Alternativa Open Source a Firebase).
+
+Base de Datos: PostgreSQL.
+
+Autenticación: Supabase Auth (Email/Password + Proveedores sociales).
+
+Almacenamiento de Archivos: Supabase Storage (Buckets para imágenes, PDFs y audios de facturas).
+
+Generación de APK
+Herramienta: Bubblewrap (CLI de Google) o PWABuilder.
+
+Función: Genera el "Digital Asset Links" para verificar la propiedad del dominio y compila el APK/AAB para Android.
+
+3. Estructura de la Base de Datos (Modelo Relacional)
+Diseño del esquema en PostgreSQL (Supabase) para soportar multiusuario y seguridad.
+
+Tabla: profiles (Usuarios)
+Extiende la tabla de autenticación interna.
+
+id (PK, vinculado a auth.users)
+
+username (Texto)
+
+avatar_url (Texto)
+
+currency_pref (Texto, ej: EUR, USD)
+
+created_at (Timestamp)
+
+Tabla: categories (Categorías de Gasto/Ingreso)
+id (UUID, PK)
+
+name (Texto - ej: "Comida", "Transporte")
+
+type (Texto - "ingreso" o "gasto")
+
+icon (Texto - identificador de icono)
+
+user_id (UUID, FK) -> Crucial para que cada usuario tenga sus propias categorías personalizadas.
+
+Tabla: transactions (Movimientos Financieros)
+id (UUID, PK)
+
+user_id (UUID, FK) -> Seguridad RLS: solo el dueño ve esto.
+
+category_id (UUID, FK)
+
+amount (Decimal/Numeric)
+
+date (Timestamp con zona horaria)
+
+description (Texto)
+
+file_path (Texto) -> Ruta relativa al archivo en el Storage (ej: "user_123/factura_enero.pdf").
+
+is_synced (Booleano - Campo solo local en IndexedDB para control de sincronización).
+
+Seguridad (Row Level Security - RLS)
+Se aplicarán políticas SQL estrictas:
+
+SELECT, INSERT, UPDATE, DELETE solo permitidos si auth.uid() == user_id.
+
+4. Estrategia de Gestión de Ficheros (Archivos)
+El requisito de manejar imágenes, PDFs y audios se gestionará en dos capas:
+
+Capa Local (Captura):
+
+Uso del <input type="file" accept="..."> nativo.
+
+Previsualización inmediata mediante URL.createObjectURL().
+
+Si no hay internet, el archivo se convierte a Blob y se guarda temporalmente en IndexedDB.
+
+Capa Nube (Persistencia):
+
+Se crea un Bucket Privado en Supabase llamado comprobantes.
+
+Estructura de carpetas: /{user_id}/{año}/{mes}/{nombre_archivo}.
+
+Solo el usuario autenticado tiene permiso de lectura/escritura en su carpeta.
+
+5. Lógica de Sincronización (Sync Manager)
+Para cumplir con "Almacena información local" y "Base de datos en la nube", se necesita un gestor de sincronización:
+
+Al iniciar la app:
+
+El sistema revisa si hay conexión.
+
+Si hay conexión: Descarga los cambios recientes de Supabase (delta sync) y actualiza IndexedDB.
+
+Si no hay conexión: Lee directamente de IndexedDB y renderiza la interfaz.
+
+Al crear/editar un registro (CRUD):
+
+La acción se guarda primero en IndexedDB.
+
+Se intenta enviar a la API de Supabase inmediatamente.
+
+Si la API falla (sin red), el registro se marca localmente como pending_sync.
+
+Un "Listener" de red detecta cuándo vuelve internet y empuja automáticamente los registros pendientes.
+
+6. Diseño de Interfaz (Multipantalla y Multiplataforma)
+La interfaz se adaptará mediante CSS Media Queries, sin necesidad de crear dos apps distintas.
+
+Estructura de Navegación:
+
+Móvil: Barra de navegación inferior (Bottom Tab Bar) con iconos: Dashboard, Movimientos, Añadir (+), Reportes, Perfil.
+
+Escritorio/Tablet: Barra lateral izquierda (Sidebar) expandida.
+
+Pantallas (Vistas):
+
+Auth: Login/Registro.
+
+Dashboard: Resumen de saldo, gráfico circular (Canvas JS) de gastos por categoría.
+
+Listado: Scroll infinito de transacciones con filtros por fecha.
+
+Detalle/Edición: Formulario para ver el archivo adjunto (PDF/Img) y editar datos.
+
+Ajustes: Cambio de idioma y exportación de datos (JSON/CSV).

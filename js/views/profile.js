@@ -260,7 +260,11 @@ export default async function () {
                 window.location.reload();
             } catch (err) {
                 console.error(err);
-                alert('Error al actualizar: ' + err.message);
+                if (err.message && err.message.includes('Could not find the') && err.message.includes('column')) {
+                    alert('Error de Schema: Falta una columna en Supabase. \n\nEjecuta esto en SQL Editor:\nALTER TABLE profiles ADD COLUMN avatar_url text;');
+                } else {
+                    alert('Error al actualizar: ' + err.message);
+                }
             }
         });
 

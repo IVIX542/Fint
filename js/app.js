@@ -47,10 +47,31 @@ const app = async () => {
                 syncManager.initRealtimeSubscription();
             }
 
-            // Check Auth
+            // Listen for Auth Changes (Redirects, SignOuts)
+            supabase.auth.onAuthStateChange((event, session) => {
+                console.log('Auth Event:', event);
+
+                if (event === 'SIGNED_IN') {
+                    // Redirect to dashboard if on login page
+                    if (location.hash === '#/login' || location.hash === '') {
+                        window.location.hash = '/';
+                    }
+                    // Trigger Pull on new session
+                    if (typeof syncManager.pullFromCloud === 'function') {
+                        syncManager.pullFromCloud();
+                    }
+                } else if (event === 'SIGNED_OUT') {
+                    window.location.hash = '/login';
+                }
+            });
+
+            // Check Auth (Initial)
             const { data: { session } } = await supabase.auth.getSession();
             if (!session && location.hash !== '#/login') {
                 window.location.hash = '/login';
+            } else if (session && location.hash === '#/login') {
+                // If we have session but are on login (e.g. after redirect), go home
+                window.location.hash = '/';
             }
         }
 
@@ -58,6 +79,24 @@ const app = async () => {
         loader.classList.add('hidden');
         mainApp.classList.remove('hidden');
         mainApp.classList.add('fade-in');
+
+        // Check for Auth Errors in URL (e.g. Google Login failures)
+        const params = new URLSearchParams(window.location.search);
+        const hashParams = new URLSearchParams(window.location.hash.substring(1)); // Handle hash params too
+
+        const error = params.get('error') || hashParams.get('error');
+        const errorDesc = params.get('error_description') || hashParams.get('error_description');
+
+        if (error) {
+            console.error('Auth Callback Error:', error, errorDesc);
+            // Wait a bit for UI to settle
+            setTimeout(() => {
+                alert(`Error de autenticación: ${error}\n\n${errorDesc || 'Revisa la configuración de Supabase'}`);
+                // Clean URL
+                window.history.replaceState(null, '', window.location.pathname);
+                window.location.hash = '/login';
+            }, 500);
+        }
 
     } catch (error) {
         console.error('Initialization failed:', error);

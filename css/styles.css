@@ -1,15 +1,17 @@
 :root {
     /* Color Palette - Premium HSL */
-    --primary-hue: 250; /* Deep Purple/Blue */
-    --secondary-hue: 160; /* Emerald Green for finance */
-    
+    --primary-hue: 250;
+    /* Deep Purple/Blue */
+    --secondary-hue: 160;
+    /* Emerald Green for finance */
+
     /* Light Theme */
     --bg-body-light: hsl(0, 0%, 98%);
     --bg-surface-light: hsl(0, 0%, 100%);
     --text-main-light: hsl(220, 10%, 15%);
     --text-muted-light: hsl(220, 10%, 45%);
     --border-light: hsl(220, 10%, 90%);
-    
+
     /* Dark Theme */
     --bg-body-dark: hsl(240, 10%, 10%);
     --bg-surface-dark: hsl(240, 10%, 14%);
@@ -61,7 +63,9 @@ body {
 }
 
 /* Typography */
-h1, h2, h3 {
+h1,
+h2,
+h3 {
     font-weight: 600;
     letter-spacing: -0.02em;
 }
@@ -85,30 +89,35 @@ button {
 main {
     flex: 1;
     padding: 20px;
-    padding-bottom: calc(var(--bottom-nav-height) + 20px);
-    overflow-y: auto;
+    padding-bottom: calc(var(--bottom-nav-height) + 30px);
+    /* Extra padding for bottom nav */
+    /* Remove internal scroll locks */
 }
 
 /* Navigation - Mobile First (Bottom Bar) */
 .bottom-nav {
     position: fixed;
+    /* Anchored to viewport */
     bottom: 0;
     left: 0;
     width: 100%;
     height: var(--bottom-nav-height);
-    background: rgba(30, 30, 35, 0.85); /* Glassmorphism base */
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--bg-surface);
+    border-top: 1px solid var(--border);
     display: flex;
     justify-content: space-around;
     align-items: center;
-    z-index: 100;
+    z-index: 1000;
+    /* Ensure on top */
     padding-bottom: env(safe-area-inset-bottom);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    flex-shrink: 0;
+    /* Prevent shrinking */
 }
 
 [data-theme="light"] .bottom-nav {
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.95);
+    /* Solid-ish */
     border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
@@ -182,7 +191,7 @@ main {
     border-radius: var(--radius-md);
     padding: 24px;
     border: 1px solid var(--border);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     margin-bottom: 20px;
 }
 
@@ -238,7 +247,9 @@ main {
 }
 
 /* Inputs */
-input, select, textarea {
+input,
+select,
+textarea {
     width: 100%;
     padding: 12px 16px;
     background: var(--bg-body);
@@ -255,10 +266,22 @@ input:focus {
 }
 
 /* Utils */
-.hidden { display: none !important; }
-.fade-in { animation: fadeIn 0.3s ease-in forwards; }
+.hidden {
+    display: none !important;
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-in forwards;
+}
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
