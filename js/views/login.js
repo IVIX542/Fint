@@ -45,6 +45,10 @@ export default async function () {
             <p style="text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 0.8rem;">
                 Al continuar aceptas nuestros términos y condiciones.
             </p>
+
+            <button id="guest-btn" class="btn" style="width: 100%; margin-top: 10px; background: transparent; color: var(--text-muted); border: 1px solid transparent;">
+                Continuar sin cuenta
+            </button>
         </div>
     `;
 
@@ -54,6 +58,19 @@ export default async function () {
         const tabRegister = document.getElementById('tab-register');
         const submitBtn = document.getElementById('submit-btn');
         const errorMsg = document.getElementById('auth-error');
+        const guestBtn = document.getElementById('guest-btn');
+
+        if (guestBtn) {
+            if (guestBtn) {
+                guestBtn.addEventListener('click', () => {
+                    // Direct access, no confirm to avoid issues
+                    localStorage.setItem('fint_guest_mode', 'true');
+                    // Force reload to ensure App / Auth checks run clean
+                    window.location.href = '/';
+                    window.location.reload();
+                });
+            }
+        }
 
         let isLogin = true;
 

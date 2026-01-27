@@ -61,19 +61,54 @@ const app = async () => {
                         syncManager.pullFromCloud();
                     }
                 } else if (event === 'SIGNED_OUT') {
-                    window.location.hash = '/login';
+                    // Only redirect to login if NOT in guest mode
+                    const isGuest = localStorage.getItem('fint_guest_mode') === 'true';
+                    if (!isGuest) {
+                        window.location.hash = '/login';
+                    }
                 }
             });
 
             // Check Auth (Initial)
             const { data: { session } } = await supabase.auth.getSession();
-            if (!session && location.hash !== '#/login') {
+            const isGuest = localStorage.getItem('fint_guest_mode') === 'true';
+
+            if (!session && !isGuest && location.hash !== '#/login') {
                 window.location.hash = '/login';
-            } else if (session && location.hash === '#/login') {
-                // If we have session but are on login (e.g. after redirect), go home
+            } else if ((session || isGuest) && location.hash === '#/login') {
+                // If we have session or guest mode but are on login, go home
                 window.location.hash = '/';
             }
         }
+
+        // Apply Theme (if logged in)
+        if (supabase) {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                // Fetch basic theme data specifically if not already loaded
+                const { data: profile } = await supabase.from('profiles').select('theme_hue, theme_settings').eq('id', session.user.id).single();
+
+                if (profile) {
+                    const { themeManager } = await import('./theme.js');
+
+                    let settings = profile.theme_settings || {};
+                    // Migration / Backwards Compat:
+                    if (!settings.global) settings.global = {};
+                    if (profile.theme_hue && !settings.global.hue) {
+                        settings.global.hue = profile.theme_hue;
+                    }
+
+                    themeManager.apply(settings);
+                }
+            }
+        }
+
+        // Apply Local Theme Preference immediately (prevents flash of wrong theme)
+        const localMode = localStorage.getItem('fint_theme_mode');
+        if (localMode) {
+            document.documentElement.setAttribute('data-theme', localMode);
+        }
+
 
         // Show App
         loader.classList.add('hidden');

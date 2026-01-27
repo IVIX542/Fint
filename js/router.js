@@ -25,6 +25,13 @@ export const initRouter = async () => {
         document.title = `Fint - ${route.title}`;
 
         // Update Active Nav Link
+        const nav = document.querySelector('.bottom-nav');
+        if (path === '/login') {
+            if (nav) nav.style.display = 'none';
+        } else {
+            if (nav) nav.style.display = 'flex';
+        }
+
         document.querySelectorAll('.nav-item').forEach(el => {
             el.classList.remove('active');
             if (el.getAttribute('href') === `#${path}`) {

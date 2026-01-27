@@ -1,0 +1,38 @@
+[
+    {
+        "id": "test_001",
+        "amount": 6.70,
+        "description": "Compra Supermercado",
+        "category": "Comida",
+        "type": "expense",
+        "date": "2024-01-20T10:30:00.000Z",
+        "is_synced": 0
+    },
+    {
+        "id": "test_002",
+        "amount": 13.70,
+        "description": "Comida Trabajo",
+        "category": "Comida",
+        "type": "expense",
+        "date": "2024-01-21T14:15:00.000Z",
+        "is_synced": 0
+    },
+    {
+        "id": "test_003",
+        "amount": 1500.00,
+        "description": "Nómina Enero",
+        "category": "Salario",
+        "type": "income",
+        "date": "2024-01-28T09:00:00.000Z",
+        "is_synced": 0
+    },
+    {
+        "id": "test_004",
+        "amount": 45.00,
+        "description": "Gasolina",
+        "category": "Transporte",
+        "type": "expense",
+        "date": "2024-01-22T18:45:00.000Z",
+        "is_synced": 0
+    }
+]

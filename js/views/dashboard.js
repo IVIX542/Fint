@@ -16,7 +16,30 @@ export default async function () {
         };
 
         return `
-            <div class="dashboard fade-in">
+            <div class="dashboard fade-in view-dashboard">
+                ${(function () {
+                // Calculate MONTHLY flow
+                const now = new Date();
+                const currentMonthTxs = txs.filter(t => {
+                    const d = new Date(t.date);
+                    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+                });
+                const mIncome = currentMonthTxs.filter(t => t.type === 'income').reduce((a, t) => a + parseFloat(t.amount), 0);
+                const mExpense = currentMonthTxs.filter(t => t.type === 'expense').reduce((a, t) => a + parseFloat(t.amount), 0);
+
+                if (mExpense > mIncome) {
+                    return `
+                        <div style="background: rgba(244, 67, 54, 0.1); border: 1px solid var(--danger); color: var(--danger); padding: 12px; border-radius: var(--radius-sm); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 1.2rem;">⚠️</span>
+                            <div>
+                                <strong>¡Cuidado!</strong>
+                                <div style="font-size: 0.9rem;">Tus gastos superan tus ingresos este mes.</div>
+                            </div>
+                        </div>`;
+                }
+                return '';
+            })()}
+
                 <header style="margin-bottom: 24px;">
                     <h2 style="color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Saldo Total</h2>
                     <h1 style="font-size: 2.5rem; color: ${balance >= 0 ? 'var(--secondary)' : 'var(--danger)'};">

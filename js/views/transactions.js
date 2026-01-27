@@ -157,6 +157,11 @@ export default async function () {
                             </div>
                         </div>
                         <div style="display:flex; align-items:center; gap: 10px;">
+                            ${tx.receipt_url ? `
+                                <a href="${tx.receipt_url}" target="_blank" style="text-decoration:none; font-size: 1.1rem;" title="Ver Adjunto">
+                                    📎
+                                </a>
+                            ` : ''}
                             <span style="font-weight: 600; color: ${tx.type === 'income' ? 'var(--secondary)' : 'var(--text-main)'};">
                                 ${tx.type === 'income' ? '+' : '-'} ${parseFloat(tx.amount).toFixed(2)} €
                             </span>
@@ -171,7 +176,7 @@ export default async function () {
     };
 
     const template = `
-        <div class="transactions-view fade-in">
+        <div class="transactions-view fade-in view-transactions">
             <header style="margin-bottom: 20px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                     <h2 style="margin:0;">Movimientos</h2>

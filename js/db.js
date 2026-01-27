@@ -1,6 +1,6 @@
 export const DB_CONFIG = {
     name: 'fint_db',
-    version: 2,
+    version: 3,
     stores: {
         transactions: 'id',
         categories: 'id',
@@ -27,12 +27,21 @@ export const initDB = () => {
 
         request.onupgradeneeded = (event) => {
             const db = event.target.result;
+            const transaction = event.target.transaction; // Get active transaction
 
             // Transactions Store
+            let txnStore;
             if (!db.objectStoreNames.contains('transactions')) {
-                const store = db.createObjectStore('transactions', { keyPath: 'id' });
-                store.createIndex('date', 'date', { unique: false });
-                store.createIndex('is_synced', 'is_synced', { unique: false });
+                txnStore = db.createObjectStore('transactions', { keyPath: 'id' });
+                txnStore.createIndex('date', 'date', { unique: false });
+                txnStore.createIndex('is_synced', 'is_synced', { unique: false });
+            } else {
+                txnStore = transaction.objectStore('transactions');
+            }
+
+            // Version 3: Add receipt_url index
+            if (!txnStore.indexNames.contains('receipt_url')) {
+                txnStore.createIndex('receipt_url', 'receipt_url', { unique: false });
             }
 
             // Categories Store

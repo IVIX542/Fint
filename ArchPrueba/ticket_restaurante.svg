@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="400" viewBox="0 0 300 400">
+  <rect width="100%" height="100%" fill="#fffbf0" stroke="#ccc" stroke-width="2"/>
+  <text x="150" y="40" font-family="serif" font-size="22" text-anchor="middle" fill="#5a3e1b">RESTAURANTE EL BOCADO</text>
+  
+  <line x1="40" y1="80" x2="260" y2="80" stroke="#5a3e1b" stroke-width="1"/>
+  
+  <text x="40" y="120" font-family="monospace" font-size="14" fill="#333">1x Menú del Día</text>
+  <text x="260" y="120" font-family="monospace" font-size="14" fill="#333" text-anchor="end">12.50 €</text>
+  
+  <text x="40" y="150" font-family="monospace" font-size="14" fill="#333">1x Café Solo</text>
+  <text x="260" y="150" font-family="monospace" font-size="14" fill="#333" text-anchor="end">1.20 €</text>
+  
+  <line x1="40" y1="250" x2="260" y2="250" stroke="#5a3e1b" stroke-width="1"/>
+  
+  <text x="40" y="290" font-family="monospace" font-size="18" font-weight="bold" fill="#5a3e1b">TOTAL</text>
+  <text x="260" y="290" font-family="monospace" font-size="18" font-weight="bold" fill="#5a3e1b" text-anchor="end">13.70 €</text>
+</svg>

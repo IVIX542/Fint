@@ -1,25 +1,44 @@
+/* 
+   ==========================================================================
+   🛑 CRITICAL STYLE BASE - DO NOT DUPLICATE OR OVERWRITE WITHOUT REVIEW 🛑
+   ==========================================================================
+   This file represents the GOLDEN MASTER state of the application styles.
+   - It contains the CLEANED and VERIFIED implementation of:
+     1. Core Variables & Reset
+     2. Layout & Navigation
+     3. Material Design 3 Components (including the Switch fix)
+     4. Animations & Utils
+     5. Advanced Personalization Accordions
+   
+   ⚠️ WARNING: 
+   Do NOT append duplicate blocks at the end of this file. 
+   If you need to change a style, EDIT THE EXISTING DEFINITION.
+   Do NOT revert the Theme Switch CSS; it uses a specific SVG+Transform fix.
+   ========================================================================== 
+*/
+
 :root {
     /* Color Palette - Premium HSL */
     --primary-hue: 250;
     /* Deep Purple/Blue */
     --secondary-hue: 160;
-    /* Emerald Green for finance */
+    /* Emerald Green */
 
-    /* Light Theme */
-    --bg-body-light: hsl(0, 0%, 98%);
-    --bg-surface-light: hsl(0, 0%, 100%);
-    --text-main-light: hsl(220, 10%, 15%);
-    --text-muted-light: hsl(220, 10%, 45%);
-    --border-light: hsl(220, 10%, 90%);
+    /* Light Theme Options */
+    --bg-body-light: hsl(0, 0%, 100%);
+    --bg-surface-light: hsla(0, 0%, 100%, 0.534);
+    --text-main-light: hsl(0, 0%, 0%);
+    --text-muted-light: hsl(0, 0%, 40%);
+    --border-light: hsl(0, 0%, 85%);
 
-    /* Dark Theme */
+    /* Dark Theme Options */
     --bg-body-dark: hsl(240, 10%, 10%);
     --bg-surface-dark: hsl(240, 10%, 14%);
     --text-main-dark: hsl(0, 0%, 95%);
     --text-muted-dark: hsl(240, 5%, 65%);
     --border-dark: hsl(240, 5%, 20%);
 
-    /* Default to Dark Mode variables initially, script will toggle */
+    /* Default active vars (Dark Mode default) */
     --bg-body: var(--bg-body-dark);
     --bg-surface: var(--bg-surface-dark);
     --text-main: var(--text-main-dark);
@@ -38,13 +57,31 @@
     --bottom-nav-height: 70px;
 }
 
-[data-theme="light"] {
+/* Explicitly target root with data-theme for stronger specificity */
+/* Explicitly target root with data-theme */
+/* Explicitly target root with data-theme */
+:root[data-theme="light"] {
+    /* 1. Define Light Values */
+    --bg-body-light: hsl(0, 0%, 100%);
+    /* Light Grey (Depth) */
+    --bg-surface-light: hsla(0, 0%, 100%, 0.534);
+    /* Pure White (Cards) */
+    --text-main-light: hsl(0, 0%, 0%);
+    /* Black Text */
+    --text-muted-light: hsl(0, 0%, 40%);
+    /* Dark Grey */
+    --border-light: hsl(0, 0%, 85%);
+    /* Subtle Grey Border */
+
+    /* 2. ACTIVATE Light Values */
     --bg-body: var(--bg-body-light);
     --bg-surface: var(--bg-surface-light);
     --text-main: var(--text-main-light);
     --text-muted: var(--text-muted-light);
     --border: var(--border-light);
 }
+
+
 
 * {
     box-sizing: border-box;
@@ -59,9 +96,8 @@ body {
     color: var(--text-main);
     line-height: 1.5;
     overflow: hidden;
-    /* Prevent body scroll */
+    /* Prevent body scroll (app shell) */
     height: 100vh;
-    /* Fixed height */
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -85,7 +121,6 @@ button {
     display: flex;
     flex-direction: column;
     height: 100%;
-    /* Full height of body */
     max-width: 100vw;
     overflow: hidden;
 }
@@ -96,15 +131,12 @@ main {
     padding: 20px;
     padding-bottom: calc(var(--bottom-nav-height) + 30px);
     overflow-y: auto;
-    /* Scroll ONLY here */
     -webkit-overflow-scrolling: touch;
-    /* Smooth iOS scroll */
 }
 
 /* Navigation - Mobile First (Bottom Bar) */
 .bottom-nav {
     position: fixed;
-    /* Anchored to viewport */
     bottom: 0;
     left: 0;
     width: 100%;
@@ -115,17 +147,15 @@ main {
     justify-content: space-around;
     align-items: center;
     z-index: 1000;
-    /* Ensure on top */
     padding-bottom: env(safe-area-inset-bottom);
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
     flex-shrink: 0;
-    /* Prevent shrinking */
 }
 
+/* Specific overrides for light mode nav */
 [data-theme="light"] .bottom-nav {
-    background: rgba(255, 255, 255, 0.95);
-    /* Solid-ish */
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    background: rgb(255, 255, 255);
+    border-top: 1px solid rgba(0, 0, 0, 0.223);
 }
 
 .nav-item {
@@ -291,4 +321,207 @@ input:focus {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* ==========================================================================
+   Material Design 3 Switch (Fixed SVG Version + Day/Night Colors)
+   ========================================================================== */
+.custom-theme-switch {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 32px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.custom-theme-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.switch-track {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #87CEEB;
+    /* Sky Blue (Day) */
+    border: 2px solid transparent;
+    /* No border for colorful version */
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border-radius: 100px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.switch-thumb {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    background-color: #FFD700;
+    /* Sun Yellow (Day) */
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+    /* Layout & Animation Logic */
+    width: 24px;
+    /* Fixed large size for Day */
+    height: 24px;
+    top: 50%;
+    left: 4px;
+    /* Start Pos */
+    transform: translate(0, -50%);
+    /* Centered Y */
+
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Icons within thumb */
+.switch-thumb svg {
+    width: 14px;
+    height: 14px;
+    position: absolute;
+    transition: all 0.3s ease;
+}
+
+.icon-sun {
+    opacity: 1;
+    transform: scale(1);
+    color: #F57F17;
+    /* Strong Orange Icon inside Yellow Thumb */
+}
+
+.icon-moon {
+    opacity: 0;
+    transform: scale(0.5) rotate(-90deg);
+}
+
+/* Checked State (Dark Mode) */
+input:checked+.switch-track {
+    background-color: #2C2C3E;
+    /* Night Blue */
+    border-color: transparent;
+}
+
+input:checked+.switch-track .switch-thumb {
+    /* Move Logic: 
+       Start: 4px. 
+       End Target Right: 4px gap. 
+       Container 52px. Width 24px. 
+       Right Edge = 52. Left Edge Target = 52 - 24 - 4 = 24px.
+       Delta X = 24 - 4 = 20px. */
+    transform: translate(20px, -50%);
+
+    width: 24px;
+    height: 24px;
+    background-color: #FFFFFF;
+    /* Moon White */
+    box-shadow: 0 2px 5px rgba(255, 255, 255, 0.2);
+}
+
+input:checked+.switch-track .icon-sun {
+    opacity: 0;
+    transform: scale(0.5) rotate(90deg);
+}
+
+input:checked+.switch-track .icon-moon {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    color: var(--primary);
+    /* Theme Color Moon Icon */
+    width: 16px;
+    height: 16px;
+}
+
+/* Hover effects */
+.custom-theme-switch:hover .switch-thumb {
+    transform: translate(0, -50%) scale(1.05);
+}
+
+input:checked+.switch-track:hover .switch-thumb {
+    transform: translate(20px, -50%) scale(1.05);
+}
+
+/* ==========================================================================
+   Advanced Personalization Accordions
+   ========================================================================== */
+details.theme-accordion {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+details.theme-accordion>summary {
+    list-style: none;
+    /* Hide default selector */
+    padding: 12px 16px;
+    cursor: pointer;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-surface);
+    transition: background 0.2s;
+}
+
+/* Custom Arrow using Material Symbols font */
+details.theme-accordion>summary::after {
+    content: 'expand_more';
+    font-family: 'Material Symbols Rounded';
+    font-size: 20px;
+    color: var(--text-muted);
+    transition: transform 0.3s ease;
+}
+
+details.theme-accordion[open]>summary::after {
+    transform: rotate(180deg);
+}
+
+details.theme-accordion>summary:hover {
+    background: var(--bg-body);
+}
+
+details.theme-accordion>div {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+    animation: slideDown 0.3s ease-out;
+}
+
+/* Nested Detail Blocks */
+details.theme-accordion details {
+    margin-bottom: 8px;
+    background: var(--bg-body);
+    border: none;
+}
+
+details.theme-accordion details summary {
+    font-size: 0.9rem;
+    padding: 10px 12px;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Color Pickers */
+.color-picker-global,
+.color-picker-section {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 4px 0;
 }
