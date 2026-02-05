@@ -1,7 +1,12 @@
 import { initDB, dbActions } from './db.js';
-import { initRouter } from './router.js?v=11';
+import { initRouter } from './router.js?v=26';
 import { supabase } from './supabase.js';
 import { syncManager } from './sync.js';
+
+// Feature Flags - Toggle to true to enable new features
+window.FINT_FEATURES = {
+    BANK_INTEGRATION: false // Set to true to enable bank integration
+};
 
 const app = async () => {
     // NUCLEAR CACHE CLEAR (One time execution)

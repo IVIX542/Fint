@@ -1,11 +1,13 @@
 const routes = {
-    '/': { title: 'Inicio', render: () => import('./views/dashboard.js?v=11').then(m => m.default()) },
-    '/login': { title: 'Acceso', render: () => import('./views/login.js?v=11').then(m => m.default()) },
-    '/transactions': { title: 'Movimientos', render: () => import('./views/transactions.js?v=11').then(m => m.default()) },
-    '/categories': { title: 'Categorías', render: () => import('./views/categories.js?v=11').then(m => m.default()) },
-    '/add': { title: 'Añadir', render: () => import('./views/add.js?v=11').then(m => m.default()) },
-    '/stats': { title: 'Reportes', render: () => import('./views/stats.js?v=11').then(m => m.default()) },
-    '/profile': { title: 'Perfil', render: () => import('./views/profile.js?v=11').then(m => m.default()) }
+    '/': { title: 'Inicio', render: () => import('./views/dashboard.js?v=26').then(m => m.default()) },
+    '/login': { title: 'Acceso', render: () => import('./views/login.js?v=26').then(m => m.default()) },
+    '/transactions': { title: 'Movimientos', render: () => import('./views/transactions.js?v=26').then(m => m.default()) },
+    '/categories': { title: 'Categorías', render: () => import('./views/categories.js?v=26').then(m => m.default()) },
+    '/add': { title: 'Añadir', render: () => import('./views/add.js?v=26').then(m => m.default()) },
+    '/stats': { title: 'Reportes', render: () => import('./views/stats.js?v=26').then(m => m.default()) },
+    '/profile': { title: 'Perfil', render: () => import('./views/profile.js?v=26').then(m => m.default()) },
+    '/bank-connect': { title: 'Conectar Banco', render: () => import('./views/bank-connect.js?v=26').then(m => m.default()) },
+    '/bank-callback': { title: 'Conectando...', render: () => import('./views/bank-callback.js?v=26').then(m => m.default()) }
 };
 
 export const initRouter = async () => {
@@ -13,6 +15,13 @@ export const initRouter = async () => {
 
     const handleNavigation = async () => {
         let path = location.hash.slice(1) || '/';
+
+        // Feature Flag Guard
+        if ((path === '/bank-connect' || path === '/bank-callback') && !window.FINT_FEATURES?.BANK_INTEGRATION) {
+            window.location.hash = '/';
+            return;
+        }
+
         // Handle routes that imply parameters? Simple exact match for now
 
         let route = routes[path];
@@ -26,7 +35,7 @@ export const initRouter = async () => {
 
         // Update Active Nav Link
         const nav = document.querySelector('.bottom-nav');
-        if (path === '/login') {
+        if (path === '/login' || path === '/bank-connect' || path === '/bank-callback') {
             if (nav) nav.style.display = 'none';
         } else {
             if (nav) nav.style.display = 'flex';

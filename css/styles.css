@@ -525,3 +525,110 @@ details.theme-accordion details summary {
     flex-wrap: wrap;
     padding: 4px 0;
 }
+
+/* ==========================================================================
+   Bank Integration Styles
+   ========================================================================== */
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.modal-content {
+    max-width: 90%;
+    width: 100%;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Spinner Animation */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-left-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Secondary Button */
+.btn-secondary {
+    background: var(--bg-surface);
+    color: var(--text-main);
+    border: 1px solid var(--border);
+    padding: 12px 24px;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+    background: var(--bg-body);
+}
+
+.btn-secondary:active {
+    transform: translateY(1px);
+}
+
+/* Bank Card Hover Effects */
+.bank-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bank-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Bank List Item Styles */
+.bank-list {
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.bank-item {
+    transition: all 0.2s ease;
+}
+
+.bank-item:hover {
+    transform: translateX(4px);
+    background: var(--bg-tertiary) !important;
+}
+
+/* Tertiary background for better depth */
+:root {
+    --bg-tertiary: hsl(240, 10%, 18%);
+}
+
+:root[data-theme="light"] {
+    --bg-tertiary: hsl(0, 0%, 96%);
+}

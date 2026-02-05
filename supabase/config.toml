@@ -1,0 +1,66 @@
+
+[functions.nodigen-auth]
+enabled = true
+verify_jwt = true
+import_map = "./functions/nodigen-auth/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/nodigen-auth/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/nodigen-auth/*.html" ]
+
+[functions.nodigen-banks]
+enabled = true
+verify_jwt = true
+import_map = "./functions/nodigen-banks/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/nodigen-banks/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/nodigen-banks/*.html" ]
+
+[functions.nodigen-connect]
+enabled = true
+verify_jwt = true
+import_map = "./functions/nodigen-connect/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/nodigen-connect/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/nodigen-connect/*.html" ]
+
+[functions.nodigen-accounts]
+enabled = true
+verify_jwt = true
+import_map = "./functions/nodigen-accounts/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/nodigen-accounts/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/nodigen-accounts/*.html" ]
+
+[functions.nodigen-balance]
+enabled = true
+verify_jwt = true
+import_map = "./functions/nodigen-balance/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/nodigen-balance/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/nodigen-balance/*.html" ]
+
+[functions.nodigen-transactions]
+enabled = true
+verify_jwt = true
+import_map = "./functions/nodigen-transactions/deno.json"
+# Uncomment to specify a custom file path to the entrypoint.
+# Supported file extensions are: .ts, .js, .mjs, .jsx, .tsx
+entrypoint = "./functions/nodigen-transactions/index.ts"
+# Specifies static files to be bundled with the function. Supports glob patterns.
+# For example, if you want to serve static HTML pages in your function:
+# static_files = [ "./functions/nodigen-transactions/*.html" ]

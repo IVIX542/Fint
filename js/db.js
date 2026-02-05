@@ -1,10 +1,12 @@
 export const DB_CONFIG = {
     name: 'fint_db',
-    version: 3,
+    version: 4, // Incremented for new stores
     stores: {
         transactions: 'id',
         categories: 'id',
-        pending_sync: 'id' // For storing actions that need to be synced to cloud
+        pending_sync: 'id', // For storing actions that need to be synced to cloud
+        bank_accounts: 'id', // Connected bank accounts
+        bank_balances: 'id' // Balance history for bank accounts
     }
 };
 
@@ -63,6 +65,21 @@ export const initDB = () => {
             // Pending Sync Store (Queue for offline actions)
             if (!db.objectStoreNames.contains('pending_sync')) {
                 db.createObjectStore('pending_sync', { keyPath: 'id', autoIncrement: true });
+            }
+
+            // Bank Accounts Store (Version 4)
+            if (!db.objectStoreNames.contains('bank_accounts')) {
+                const bankStore = db.createObjectStore('bank_accounts', { keyPath: 'id' });
+                bankStore.createIndex('user_id', 'user_id', { unique: false });
+                bankStore.createIndex('is_active', 'is_active', { unique: false });
+                bankStore.createIndex('last_sync', 'last_sync', { unique: false });
+            }
+
+            // Bank Balances Store (Version 4)
+            if (!db.objectStoreNames.contains('bank_balances')) {
+                const balanceStore = db.createObjectStore('bank_balances', { keyPath: 'id' });
+                balanceStore.createIndex('account_id', 'account_id', { unique: false });
+                balanceStore.createIndex('synced_at', 'synced_at', { unique: false });
             }
         };
     });
@@ -146,7 +163,7 @@ export const dbActions = {
     },
     async clearUserData() {
         if (!db) return;
-        const stores = ['transactions', 'pending_sync', 'categories']; // Keep categories or not? Maybe yes if user specific.
+        const stores = ['transactions', 'pending_sync', 'categories', 'bank_accounts', 'bank_balances'];
         // Actually, categories are also synced, so we should clear them to avoid mixing user categories.
         // Defaults will interpret "empty" as "need defaults", so we should be careful.
         // If we clear categories, ensuresDefaults will run again on next login/app start?
