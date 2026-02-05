@@ -26,6 +26,8 @@ export default async function () {
                         <input type="password" name="password" required placeholder="••••••••" minlength="6">
                     </div>
 
+                    <a href="#" id="forgot-link" style="display: block; text-align: right; font-size: 0.9rem; color: var(--primary); margin-bottom: 16px; text-decoration: none;">¿Olvidaste tu contraseña?</a>
+
                     <p id="auth-error" style="color: var(--danger); font-size: 0.9rem; margin-bottom: 16px; display: none;"></p>
 
                     <button type="submit" class="btn btn-primary" style="width: 100%;" id="submit-btn">Entrar</button>
@@ -59,6 +61,7 @@ export default async function () {
         const submitBtn = document.getElementById('submit-btn');
         const errorMsg = document.getElementById('auth-error');
         const guestBtn = document.getElementById('guest-btn');
+        const forgotLink = document.getElementById('forgot-link');
 
         if (guestBtn) {
             if (guestBtn) {
@@ -85,6 +88,8 @@ export default async function () {
                 tabRegister.style.color = 'var(--text-muted)';
                 tabRegister.style.borderBottomColor = 'transparent';
                 submitBtn.textContent = 'Entrar';
+                // Show forgot link for Login
+                forgotLink.style.display = 'block';
             } else {
                 tabRegister.classList.add('active');
                 tabRegister.style.color = 'var(--text-main)';
@@ -93,6 +98,8 @@ export default async function () {
                 tabLogin.style.color = 'var(--text-muted)';
                 tabLogin.style.borderBottomColor = 'transparent';
                 submitBtn.textContent = 'Crear Cuenta';
+                // Hide forgot link for Register
+                forgotLink.style.display = 'none';
             }
         };
 
@@ -130,19 +137,34 @@ export default async function () {
             const password = form.password.value;
 
             try {
-                let result;
                 if (isLogin) {
                     result = await supabase.auth.signInWithPassword({ email, password });
                 } else {
+                    // Check if we are in recovery mode
+                    if (isRecovery) {
+                        // RECOVERY FLOW
+                        // RECOVERY FLOW
+                        // Send to root with recovery token. App.js handles the routing via PASSWORD_RECOVERY event.
+                        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+                            redirectTo: window.location.origin
+                        });
+
+                        if (error) throw error;
+
+                        alert('Si el correo existe, recibirás un enlace para restablecer tu contraseña.');
+                        toggleMode(true); // Back to login
+                        return;
+                    }
+
                     result = await supabase.auth.signUp({ email, password });
                 }
 
-                if (result.error) throw result.error;
+                if (result && result.error) throw result.error;
 
                 // Success
                 if (!isLogin && !result.data.session) {
                     alert('Revisa tu email para confirmar la cuenta.');
-                } else {
+                } else if (!isRecovery) {
                     // Trigger Pull
                     if (typeof syncManager.pullFromCloud === 'function') {
                         await syncManager.pullFromCloud();
@@ -156,7 +178,43 @@ export default async function () {
                 errorMsg.style.display = 'block';
             } finally {
                 submitBtn.disabled = false;
-                submitBtn.textContent = isLogin ? 'Entrar' : 'Crear Cuenta';
+                if (isRecovery) {
+                    submitBtn.textContent = 'Enviar enlace';
+                } else {
+                    submitBtn.textContent = isLogin ? 'Entrar' : 'Crear Cuenta';
+                }
+            }
+        });
+
+        // Link handling logic moved below
+
+
+        let isRecovery = false;
+
+        forgotLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            isRecovery = !isRecovery;
+
+            const passDiv = form.querySelector('div:nth-child(2)');
+            const title = document.querySelector('h1').nextElementSibling;
+
+            if (isRecovery) {
+                passDiv.style.display = 'none';
+                form.password.required = false;  // CRITICAL FIX: Remove required
+                forgotLink.textContent = 'Volver al inicio de sesión';
+                submitBtn.textContent = 'Enviar enlace';
+                title.textContent = 'Recuperar Contraseña';
+                tabLogin.parentElement.style.display = 'none';
+                errorMsg.style.display = 'none';
+                isLogin = false; // Prevent standard login logic
+            } else {
+                passDiv.style.display = 'block';
+                form.password.required = true;   // Restore required
+                forgotLink.textContent = '¿Olvidaste tu contraseña?';
+                submitBtn.textContent = 'Entrar';
+                title.textContent = 'Tus finanzas, sincronizadas.';
+                tabLogin.parentElement.style.display = 'flex';
+                toggleMode(true);
             }
         });
     };

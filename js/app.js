@@ -10,7 +10,7 @@ window.FINT_FEATURES = {
 
 const app = async () => {
     // NUCLEAR CACHE CLEAR (One time execution)
-    if (!localStorage.getItem('fint_v10_cleared')) {
+    if (!localStorage.getItem('fint_v11_cleared')) {
         console.log('Nuclar Cache Clear Triggered');
         if ('serviceWorker' in navigator) {
             const registrations = await navigator.serviceWorker.getRegistrations();
@@ -22,12 +22,17 @@ const app = async () => {
             const keys = await caches.keys();
             await Promise.all(keys.map(key => caches.delete(key)));
         }
-        localStorage.setItem('fint_v10_cleared', 'true');
+        localStorage.setItem('fint_v11_cleared', 'true');
         window.location.reload();
         return;
     }
 
     console.log('Fint App intializing...');
+
+    // DEBUG MOBILE: Removed after diagnosis
+    // if (window.location.hash.length > 5 && !window.location.hash.startsWith('#/')) {
+    //    alert('DEBUG HASH:\n' + window.location.hash);
+    // }
 
     // Remove initial loader after a slight delay for smooth UX
     const loader = document.getElementById('app-loading');
@@ -56,9 +61,11 @@ const app = async () => {
             supabase.auth.onAuthStateChange((event, session) => {
                 console.log('Auth Event:', event);
 
-                if (event === 'SIGNED_IN') {
+                if (event === 'PASSWORD_RECOVERY') {
+                    window.location.hash = '/reset-password';
+                } else if (event === 'SIGNED_IN') {
                     // Redirect to dashboard if on login page
-                    if (location.hash === '#/login' || location.hash === '') {
+                    if (location.hash.startsWith('#/login') || location.hash === '') {
                         window.location.hash = '/';
                     }
                     // Trigger Pull on new session
@@ -78,7 +85,18 @@ const app = async () => {
             const { data: { session } } = await supabase.auth.getSession();
             const isGuest = localStorage.getItem('fint_guest_mode') === 'true';
 
-            if (!session && !isGuest && location.hash !== '#/login') {
+            // Check if we are potentially in an auth callback or reset flow
+            // Check if we are potentially in an auth callback or reset flow
+            // CRITICAL FIX: Check full href, not just hash, as mobile might come with search params (PKCE) or stripped hash
+            const href = window.location.href;
+            const isAuthFlow = href.includes('access_token') ||
+                href.includes('type=recovery') ||
+                href.includes('type=magiclink') ||
+                href.includes('error_description') ||
+                ((window.location.hash.length > 5) && !window.location.hash.startsWith('#/login'));
+
+            if (!session && !isGuest && !isAuthFlow && location.hash !== '#/login') {
+                // Debugging Mobile Issue (Removed)
                 window.location.hash = '/login';
             } else if ((session || isGuest) && location.hash === '#/login') {
                 // If we have session or guest mode but are on login, go home
