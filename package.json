@@ -1,0 +1,29 @@
+{
+    "name": "fint-app",
+    "version": "1.0.0",
+    "description": "Aplicación de Finanzas Personales - Fint",
+    "main": "index.html",
+    "scripts": {
+        "cap:sync": "npx cap sync",
+        "cap:open:android": "npx cap open android",
+        "cap:build": "npx cap copy && npx cap sync",
+        "serve": "python -m http.server 8000"
+    },
+    "keywords": [
+        "finanzas",
+        "pwa",
+        "capacitor",
+        "android"
+    ],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "@capacitor/android": "^5.7.0",
+        "@capacitor/browser": "^8.0.1",
+        "@capacitor/core": "^5.7.0",
+        "@capacitor/network": "^8.0.1"
+    },
+    "devDependencies": {
+        "@capacitor/cli": "^5.7.0"
+    }
+}

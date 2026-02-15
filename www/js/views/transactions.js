@@ -175,7 +175,7 @@ export default async function () {
                 return;
             }
 
-            // Debounce - REDUCED to 100ms for faster real-time updates
+            // Debounce
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(async () => {
                 console.log('View updating data (Debounced)...');
@@ -183,7 +183,7 @@ export default async function () {
                 freshTxs.sort((a, b) => new Date(b.date) - new Date(a.date));
                 allTransactions = freshTxs;
                 applyFilters();
-            }, 100); // REDUCED from 300ms to 100ms
+            }, 300); // 300ms delay
         };
 
         window.addEventListener('fint-data-changed', handleDataChange);
